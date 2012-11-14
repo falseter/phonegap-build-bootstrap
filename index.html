@@ -49,8 +49,154 @@
 
 		</div>
 
-		<div data-role="view" data-layout="main-layout" id="settings" data-title="Settings">
-			<p>Settings</p>
+		<div data-role="view" data-layout="main-layout" id="settings" data-title="Simulasi">
+			<body style="line-height:24px;">
+		<strong>Simulasi KPR FLPP</strong> 
+		<br />
+				<form id="form1" name="form1" method="post" action="">
+  				Plafon &nbsp;: Rp <input name="plafon" type="text" id="plafon" size="10" style="text-align:right" onkeyup="FormatCurrency(this)" /> <br />
+  				Bunga &nbsp;: <input name="bunga" type="text" id="bunga" size="2" style="text-align:right" onkeyup="dodadeccheck(this)" /> % <br />
+  				Jangka : <input name="jangka" type="text" id="jangka" size="1" style="text-align:right" onkeyup="dodanumcheck(this)" /> Bulan <br />
+  				<input type="button" value="Flat" name="flat" id="flat" onclick="getFlat();" />
+  				<input type="button" value="Efektif" name="efektif" id="efektif" onclick="getEfektif();" /><br />
+ 				<fieldset style="width:300px">
+    				<legend><b>Hasil Perhitungan Cicilan</b></legend>
+      			 <div id='divHasil'></div>
+  </fieldset>
+</form>
+
+<script language="javascript">
+function __(id){
+return document.getElementById(id);
+}
+function getPlafon(){
+var strplafon=__('plafon').value;
+var hasils=strplafon.replace(/\,/g,"");
+return hasils;
+}
+function getBunga(){
+return __('bunga').value;
+}
+function getJangka(){
+return __('jangka').value;
+}
+
+function getEfektif(){
+var c_balance = getPlafon();
+var total_periods = getJangka();
+var annual_interest = getBunga();
+        if(annual_interest>0){
+            var interest_percent  = annual_interest / 100;
+            var period_interest   = interest_percent / 12;
+            var c_period_payment_full  = c_balance * (period_interest / (1 - Math.pow((1 + period_interest), -(total_periods))));
+        }else{
+            var c_period_payment_full = c_balance / total_periods;
+        }
+        c_period_payment  = Math.round(c_period_payment_full);
+		
+		__('divHasil').innerHTML= '<b>Total Plafon :</b> Rp '+formatCurrency(c_balance)+
+		                          '<br><b>Bunga /thn &nbsp;&nbsp;:</b> '+formatCurrency(annual_interest)+ '%'+
+								  '<br><b>Suku Bunga :</b> Efektif'+
+								  '<br><b>Cicilan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b> Rp '+formatCurrency(c_period_payment)+' / bln';
+		
+		return true;
+}
+
+function getFlat(){
+var c_balance = getPlafon();
+var total_periods = getJangka();
+var annual_interest = getBunga();
+        if(annual_interest>0){
+            var c_period_payment_full  = (c_balance / total_periods) + (c_balance * annual_interest / 1200);
+        }else{
+            var c_period_payment_full = c_balance / total_periods;
+        }
+        c_period_payment  = Math.round(c_period_payment_full);		
+		__('divHasil').innerHTML= '<b>Total Plafon :</b> Rp '+formatCurrency(c_balance)+
+		                          '<br><b>Bunga /thn &nbsp;&nbsp;:</b> '+formatCurrency(annual_interest)+ '%'+
+								  '<br><b>Suku Bunga :</b> Flat'+
+								  '<br><b>Cicilan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</b> Rp '+formatCurrency(c_period_payment)+' / bln';		
+		return true;
+}
+// -- function buat set currency format  ------------------------------------------------- //
+ function FormatCurrency(objNum)
+	{
+	    var num = objNum.value
+	    var ent, dec;
+	    if (num != '' && num != objNum.oldvalue)
+	    {
+	          num = MoneyToNumber(num);
+	          if (isNaN(num))
+	          {
+	                objNum.value = (objNum.oldvalue)?objNum.oldvalue:'';
+	          } else {
+	                var ev = (navigator.appName.indexOf('Netscape') != -1)?Event:event;
+
+					if (ev.keyCode == 190 || !isNaN(num.split('.')[1]))
+	                {		alert(num.split('.')[1]);
+	                      objNum.value = AddCommas(num.split('.')[0])+'.'+num.split('.')[1];
+	                }
+	                else
+	                {
+	                      objNum.value = AddCommas(num.split('.')[0]);
+	                }
+	                objNum.oldvalue = objNum.value;
+	          }
+	    }
+	}
+	function MoneyToNumber(num)
+	{
+	    return (num.replace(/,/g, ''));
+	}
+
+	function AddCommas(num)
+	{
+	    numArr=new String(num).split('').reverse();
+	    for (i=3;i<numArr.length;i+=3)
+	    {
+	          numArr[i]+=',';
+	    }
+	    return numArr.reverse().join('');
+	}	
+	
+	function formatCurrency(num) {
+num = num.toString().replace(/\$|\,/g,'');
+if(isNaN(num))
+num = "0";
+sign = (num == (num = Math.abs(num)));
+num = Math.floor(num*100+0.50000000001);
+cents = num%100;
+num = Math.floor(num/100).toString();
+for (var i = 0; i < Math.floor((num.length-(1+i))/3); i++)
+num = num.substring(0,num.length-(4*i+3))+'.'+
+num.substring(num.length-(4*i+3));
+return (((sign)?'':'-') + num);
+}
+
+// -- function buat set currency format end ------------------------------------------------- //
+var mikExpNum = /[$\\@\\\%\^\&\(\)\[\]\+\;\{\}\`\~\=\|\"\'\.\,\/\#\*\-\_\?\<\>\ \abcdefghijklmnopqrstuvwxyz\ABCDEFGHIJKLMNOPQRSTUVWXYZ]/;
+function dodanumcheck(val) {
+var strPass = val.value;
+var strLength = strPass.length;
+var lchar = val.value.charAt((strLength) - 1);
+if(lchar.search(mikExpNum) != -1) {
+var tst = val.value.substring(0, (strLength) - 1);
+val.value = tst;
+   }
+}
+var mikExpDec = /[$\\@\\\%\^\&\(\)\[\]\+\;\{\}\`\~\=\|\"\'\,\/\#\*\-\_\?\<\>\ \abcdefghijklmnopqrstuvwxyz\ABCDEFGHIJKLMNOPQRSTUVWXYZ]/;
+function dodadeccheck(val) {
+var strPass = val.value;
+var strLength = strPass.length;
+var lchar = val.value.charAt((strLength) - 1);
+if(lchar.search(mikExpDec) != -1) {
+var tst = val.value.substring(0, (strLength) - 1);
+val.value = tst;
+   }
+}
+window.status="Created by Herman Fersendy"
+</script>
+
 		</div>
 
 		<div data-role="view" data-layout="main-layout" id="featured" data-title="featured">
