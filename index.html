@@ -45,9 +45,44 @@
 			 data-layout="main-layout" where "main-layout" is the data-id of the desired
 			 layout -->
 
-		<div data-role="view" data-show="MYAPP.show" data-layout="main-layout" id="home" data-title="Home">
+		<div data-role="view" data-show="MYAPP.show" data-layout="main-layout" id="home" data-title="Produk">
+			<ul data-role="listview" data-style="inset" data-type="group">
+       				<li>KATEGORI RUKO
+            				<ul>
+                				<li><a href="#duaview">Ruko Cilegon Tipe 44/58</a></li>
+                				<li><a href="#tigaview">Ruko Karawang Tipe 100/90</a></li>
+            					<li><a href="#empatview">Ruko Karawang Tipe 100/75</a></li>
+					</ul>
+        			</li>
+    			</ul>
 
+    			<ul data-role="listview" data-style="inset" data-type="group">
+        			<li>Tipe Rumah
+            				<ul>
+                				<li><a href="#stretchview">Stretched View</a></li>
+            				</ul>
+        			</li>
+   			</ul>
 		</div>
+
+		<div data-role="view" id="secondview" data-layout="mobile-view" data-title="Local View">
+    		<div style="background: url(../../content/shared/images/patterns/pattern7.png); color: #fff; padding: 50px 0; text-align: center;"><p>Hi, I'm a local view.</p></div>
+		</div>
+
+		<div data-role="view" id="stretchview" data-layout="mobile-view" data-title="Stretched View" data-stretch="true">
+   		<div style="background: url(../../content/shared/images/patterns/pattern7.png); color: #fff; padding-top: 50px; text-align: center;"><p>Hi, I'm a stretched view.</p><p>Use me for full screen content that doesn't need scrolling.</p></div>
+		</div>
+
+		<div data-role="layout" data-id="mobile-view">
+    			<header data-role="header">
+        			<div data-role="navbar">
+            				<a class="nav-button" data-align="left" data-role="backbutton">Back</a>
+            				<span data-role="view-title"></span>
+            				<a data-align="right" data-role="button" class="nav-button" href="#index">Index</a>
+        			</div>
+    			</header>
+		</div>
+
 
 		<div data-role="view" data-layout="main-layout" id="settings" data-title="Simulasi">
 			<body style="line-height:24px;">
